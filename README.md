@@ -128,3 +128,6 @@ The browser must never hold enterprise service credentials. Production backend a
 For the current public prototype, upload the **contents of this folder** to the repository root. `index.html` must remain directly at the root.
 
 GitHub Pages is prototype/demo hosting only. The intended production path is a private enterprise repository with controlled CI/CD and approved hosting/security controls.
+
+### v0.5.1 login/sign-out fix
+The prototype uses a versioned session key so older GitHub Pages sessions cannot bypass the login screen after deployment. Sign out clears the prototype session and returns immediately to the login screen. Demo credentials remain `layla.haddad@maf.ae` / `welcome123`.

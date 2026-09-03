@@ -1,7 +1,13 @@
 import { getRuntimeConfig } from "../config/runtime.js";
 import { MOCK_USERS } from "../mocks/mockUsers.js";
 
-const SESSION_KEY = "careiq.prototype.session";
+// Version the prototype session so a stale login from an older GitHub Pages
+// deployment cannot silently bypass a newly introduced login experience.
+const SESSION_KEY = "careiq.prototype.session.v0.5.1";
+const LEGACY_SESSION_KEYS = Object.freeze([
+  "careiq.prototype.session",
+  "careiq.prototype.session.v0.5.0"
+]);
 
 function safeSessionStorage() {
   try { return window.sessionStorage || globalThis.sessionStorage || null; }
@@ -22,9 +28,15 @@ function toSessionUser(user) {
   });
 }
 
+function clearLegacySessions(store) {
+  if (!store) return;
+  LEGACY_SESSION_KEYS.forEach((key) => store.removeItem(key));
+}
+
 function readMockSession() {
   const store = safeSessionStorage();
   if (!store) return null;
+  clearLegacySessions(store);
   try {
     const raw = store.getItem(SESSION_KEY);
     if (!raw) return null;
@@ -63,7 +75,10 @@ export async function signIn(username, password) {
   }
 
   const store = safeSessionStorage();
-  if (store) store.setItem(SESSION_KEY, JSON.stringify({ id: match.id, username: match.username }));
+  if (store) {
+    clearLegacySessions(store);
+    store.setItem(SESSION_KEY, JSON.stringify({ id: match.id, username: match.username }));
+  }
   return { user: toSessionUser(match), accessToken: null, provider: "mock" };
 }
 
@@ -71,9 +86,13 @@ export async function signOut() {
   const config = getRuntimeConfig();
   if (config.auth.mode === "mock") {
     const store = safeSessionStorage();
-    if (store) store.removeItem(SESSION_KEY);
-    if (window.location && typeof window.location.reload === "function") window.location.reload();
+    if (store) {
+      store.removeItem(SESSION_KEY);
+      clearLegacySessions(store);
+    }
     return;
   }
   throw new Error("Production Entra sign-out adapter is not configured.");
 }
+
+export const PROTOTYPE_SESSION_KEY = SESSION_KEY;

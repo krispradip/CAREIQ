@@ -43,3 +43,10 @@ The approved interaction engine therefore remains the execution path for the cal
 - Sign out clears the prototype session
 
 Expected result: **PASS**.
+
+## v0.5.1 authentication correction
+
+- Prototype session key versioned to prevent stale sessions from older deployments bypassing the login page.
+- Sign out now clears current and legacy prototype sessions and renders the login screen immediately.
+- Login still reloads after successful authentication so the existing transcript/chat runtime starts cleanly.
+- No changes were made to the approved dashboard, call/chat UI, transcript engine, chat emulation, CareIQ Assist, announcements or wrap-up behavior.

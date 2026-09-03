@@ -13,7 +13,7 @@ for (const rel of required) {
   if (!fs.existsSync(path.join(root, rel))) { console.error(`Missing required file: ${rel}`); failed = true; }
 }
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
-for (const ref of ["./src/styles/main.css", "./config/runtime-config.js", "./src/main.js", 'name="careiq-version" content="0.5.0"']) {
+for (const ref of ["./src/styles/main.css?v=0.5.1", "./config/runtime-config.js", "./src/main.js?v=0.5.1", 'name="careiq-version" content="0.5.1"']) {
   if (!html.includes(ref)) { console.error(`index.html missing reference: ${ref}`); failed = true; }
 }
 

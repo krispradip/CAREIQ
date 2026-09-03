@@ -61,15 +61,27 @@ export const App = Object.freeze({
     setState("authenticating");
     await platform.signIn(username, password);
 
-    // A reload gives the prototype the same clean post-authentication startup
-    // boundary that the future Entra redirect/callback flow will use.
+    // Reload after successful prototype authentication so the legacy runtime
+    // starts from a clean module/document state. The versioned session survives
+    // this reload and is then consumed by App.start().
     window.location.reload();
   },
 
   async logout() {
     if (!platform) return;
-    setState("signing-out");
-    await platform.signOut();
+    try {
+      setState("signing-out");
+      await platform.signOut();
+
+      // Do not depend on a browser reload for prototype sign-out. Re-bootstrap
+      // auth and render Login immediately so the button gives visible feedback
+      // and stale GitHub Pages sessions cannot leave the dashboard on screen.
+      platform = await bootstrapPlatform();
+      window.CAREIQ_PLATFORM = platform;
+      showLogin();
+    } catch (error) {
+      renderFatalError(error);
+    }
   },
 
   get platform() {

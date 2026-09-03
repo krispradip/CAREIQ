@@ -114,6 +114,8 @@ if (!element("chatLog").innerHTML.includes(quickReply)) throw new Error("Chat em
 // Sign-out must clear the prototype session. The application controller owns
 // the lifecycle even though the legacy header still renders the button.
 click({ "data-signout": "true" });
-if (session.has("careiq.prototype.session")) throw new Error("Sign out did not clear the prototype session");
+await new Promise((resolve) => setImmediate(resolve));
+if (session.has("careiq.prototype.session.v0.5.1")) throw new Error("Sign out did not clear the prototype session");
+if (!app.innerHTML.includes("Sign in to CareIQ")) throw new Error("Sign out did not return to the login screen");
 
 console.log("CareIQ smoke tests passed, including login, sign-out and chat emulation.");
