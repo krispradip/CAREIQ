@@ -50,3 +50,15 @@ Expected result: **PASS**.
 - Sign out now clears current and legacy prototype sessions and renders the login screen immediately.
 - Login still reloads after successful authentication so the existing transcript/chat runtime starts cleanly.
 - No changes were made to the approved dashboard, call/chat UI, transcript engine, chat emulation, CareIQ Assist, announcements or wrap-up behavior.
+
+
+## v0.6.0 - Chat workspace alignment
+
+- Chat view now uses the same customer profile, six KPI strip, signal row and CareIQ Assist structure as the call view.
+- Removed duplicate Transfer / End & Wrap controls from the inner chat card; the interaction bar remains authoritative.
+- Removed the always-expanded Customer 360 and premature post-chat summary from the active chat page.
+- View in 360 opens a non-blocking side drawer so the live interaction and composer remain usable.
+- Renamed AI QA assistant presentation to SOP Guidance / Live SOP compliance score.
+- Corrected the chat End & Wrap HTML-entity display defect.
+- Updated recent purchase signal to Recent transaction: Mall of the Emirates · AED 1,240.
+- Existing chat send, quick reply, auto-response, sentiment, call transcript, announcements, wrap-up and sign-out behavior retained.

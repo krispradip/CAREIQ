@@ -750,3 +750,41 @@ body.is-login #toast{display:none}
 .login-restricted{margin:16px 0 0;text-align:center;color:var(--ink-faint);font-size:10.5px}
 @media(max-width:900px){.login-shell{grid-template-columns:1fr}.login-story{min-height:360px;padding:28px}.login-story__content{padding:55px 0 35px}.login-story h1{font-size:52px}.login-story__content>p{font-size:15px}.login-auth{min-height:auto;padding:50px 28px 60px}.login-story__foot{display:none}}
 @media(max-width:560px){.login-story{min-height:310px;padding:24px}.login-story h1{font-size:42px}.login-capabilities{display:none}.login-auth{padding:38px 22px 48px}.login-card h2{font-size:27px}}
+
+
+/* ===== v0.6 unified interaction workspace ===== */
+.interaction-view{padding-top:20px}
+.interaction-view .livebar{margin-bottom:12px;padding:10px 14px;box-shadow:0 5px 16px rgba(45,3,125,.10)}
+.interaction-workspace{position:relative}
+.chat-view .chatpane--interaction{height:560px;min-height:560px;border-radius:14px;overflow:hidden}
+.chatpane__head--simple{background:var(--paper);color:var(--share-indigo);border-bottom:1px solid var(--hair);padding:11px 18px;gap:10px}
+.chatpane__workspace-title{font-size:13px;font-weight:600;letter-spacing:-.01em}
+.chatpane__channel{display:inline-flex;align-items:center;gap:5px;margin-left:auto;padding:5px 9px;border-radius:999px;background:rgba(45,3,125,.06);font-size:10.5px;font-weight:600;color:var(--share-indigo)}
+.chatpane__conversation{font-size:10px;color:var(--ink-faint)}
+.chat-view .chatpane__log{padding:16px 20px}
+.chat-view .careiq-assist{min-height:560px}
+.chat-view .careiq-assist .say li{padding-right:112px}
+.chat-view .careiq-assist .say button{font-size:8.5px;padding:4px 7px}
+.chat-view .careiq-assist .say button[data-insert]{right:58px}
+.interaction-signals>div:first-child strong{color:#118b37}
+
+/* Customer 360 is a non-blocking drawer. The interaction remains live and
+   usable behind it; no modal backdrop or page replacement is introduced. */
+.customer360-drawer{position:fixed;z-index:100;top:86px;right:12px;bottom:12px;width:min(560px,42vw);min-width:430px;background:var(--share-cream);border:1px solid var(--hair-2);border-radius:18px;box-shadow:0 24px 64px rgba(45,3,125,.24);overflow:hidden;display:flex;flex-direction:column}
+.customer360-drawer__head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:16px 18px;background:var(--share-indigo);color:#fff;flex:0 0 auto}
+.customer360-drawer__head>div>span{display:block;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--share-pink);margin-bottom:3px}
+.customer360-drawer__head h2{margin:0;font-size:18px;font-weight:600;letter-spacing:-.02em}
+.customer360-drawer__head p{margin:5px 0 0;font-size:10.5px;line-height:1.35;color:rgba(255,255,255,.68)}
+.customer360-drawer__close{appearance:none;border:0;background:rgba(255,255,255,.14);color:#fff;width:30px;height:30px;border-radius:999px;cursor:pointer;font-size:18px;line-height:1;flex:0 0 auto}
+.customer360-drawer__close:hover{background:var(--share-pink);color:var(--share-indigo)}
+.customer360-drawer__body{padding:12px;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.customer360-drawer__body>.card{margin:0;box-shadow:none;border-radius:13px}
+.customer360-drawer__body .card__head{padding:12px 14px 7px}
+.customer360-drawer__body .card__body{padding:10px 14px 14px}
+.customer360-drawer__body .card__body--flush{padding:0}
+.customer360-drawer__body .table{font-size:10.5px}
+.customer360-drawer__body .table th,.customer360-drawer__body .table td{padding:8px 9px}
+.customer360-drawer__body .timeline li{padding:9px 12px}
+.customer360-drawer__body .qa{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:1100px){.customer360-drawer{width:min(620px,62vw);min-width:0}}
+@media(max-width:760px){.customer360-drawer{top:72px;right:8px;bottom:8px;width:calc(100vw - 16px);min-width:0}.chat-view .chatpane--interaction{height:520px;min-height:520px}}

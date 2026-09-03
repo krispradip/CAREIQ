@@ -1,6 +1,6 @@
-# CareIQ Care Console - Master v0.5.0
+# CareIQ Care Console - Master v0.6.0
 
-This is the new consolidated CareIQ prototype baseline. Use this full codebase as the master for all changes from this point onward.
+This is the consolidated CareIQ prototype baseline, updated in v0.6.0 with a unified voice/chat interaction workspace and non-blocking Customer 360 drawer. Use this full codebase as the master for all changes from this point onward.
 
 It combines the approved CareIQ dashboard/call/chat design, Pia-aligned CX additions, the prototype login journey, the application controller, service boundaries, mock data and regression checks in one complete repository.
 

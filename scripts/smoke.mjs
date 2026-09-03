@@ -107,9 +107,17 @@ click({ "data-wrap": "close" });
 click({ "data-go": "chat" });
 if (!app.innerHTML.includes("Customer · chat view")) throw new Error("Chat view did not render");
 if (!app.innerHTML.includes("chatInput")) throw new Error("Chat composer missing");
+if (!app.innerHTML.includes("CareIQ Assist")) throw new Error("Unified CareIQ Assist missing from chat");
+if (!app.innerHTML.includes("SOP Guidance")) throw new Error("SOP Guidance missing from chat");
+if (!app.innerHTML.includes("Recent transaction")) throw new Error("Unified interaction signals missing from chat");
+if (app.innerHTML.includes("AI post-chat summary")) throw new Error("Post-chat summary must not appear during active chat");
 const quickReply = "I can help with that.";
 click({ "data-quick": quickReply });
 if (!element("chatLog").innerHTML.includes(quickReply)) throw new Error("Chat emulation did not send the quick reply");
+click({ "data-360": "open" });
+if (!app.innerHTML.includes("Customer 360")) throw new Error("Customer 360 drawer did not render");
+if (!app.innerHTML.includes("Interaction remains active")) throw new Error("Customer 360 non-blocking interaction note missing");
+click({ "data-360": "close" });
 
 // Sign-out must clear the prototype session. The application controller owns
 // the lifecycle even though the legacy header still renders the button.

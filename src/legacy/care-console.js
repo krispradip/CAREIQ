@@ -262,6 +262,7 @@
     notifOpen: false,
     notifRead: false,
     wrapOpen: false,
+    customer360Open: false,
     tasks: DATA.tasks.map(function (t) { return { done: t.done }; }),
     qa: DATA.qaChecks.map(function (c) { return { done: c.done }; }),
     doDone: DATA.doThis.map(function () { return false; }),
@@ -525,57 +526,8 @@
         "</div></div>";
     }
 
-  function profile() {
+  function customer360Html() {
     var c = DATA.customer, l = DATA.loyalty;
-
-    var isCall = mode() === "call";
-
-    var livebar = '<div class="livebar">' +
-      '<button class="livebar__back" data-go="dashboard">' + ic("arrow", 15) + "<span>Dashboard</span></button>" +
-      '<span class="livebar__sep"></span>' +
-      (isCall
-        ? '<span class="livebar__chan">' + ic("phone", 14) + " Voice \u00b7 live</span>"
-        : '<span class="livebar__chan">' + ic("chat", 14) + " " + esc(DATA.chat.channel) + " \u00b7 ongoing</span>") +
-      '<span class="timer"><span class="timer__dot"></span><span class="timer__value" id="timer">' + mmss(S.seconds) + "</span>" +
-        '<button class="timer__btn" id="timerBtn" aria-label="Pause or resume">' + ic(S.running ? "pause" : "play", 13) + "</button></span>" +
-      '<span class="livebar__meta">Queue wait ' + esc(DATA.live.queueWait) + "</span>" +
-      '<span class="livebar__meta">Intent: <b>' + esc(DATA.live.intent) + "</b></span>" +
-      (isCall
-        ? '<span class="livebar__rec">' + ic("mic", 13) + " Recording</span>"
-        : '<span class="livebar__rec">' + ic("shield", 13) + " Transcript saving</span>") +
-      '<span class="livebar__spacer"></span>' +
-      (isCall ? btn("Hold", "quiet", "pause", 'data-toast="Customer placed on hold"') : "") +
-      btn("Transfer", "quiet", "up", 'data-toast="Transfer panel opened"') +
-      btn("End & wrap", "primary", "check", 'data-wrap="open"') + "</div>";
-
-    var chead = isCall
-      ? '<div class="chead chead--call"><div class="chead__id">' + avatar(c.initials, 68, "pink") + '<div class="chead__main">' +
-          '<div class="chead__namerow"><h1 class="chead__name">' + esc(c.name) + '</h1><span class="vip-badge">VIP</span>' + pill(c.churnRisk + " churn risk", "lime") + '</div>' +
-          '<div class="chead__facts chead__facts--call"><span>' + ic("phone", 13) + esc(c.phone) + '</span>' +
-          '<span>' + ic("mail", 13) + esc(c.email) + '</span><span>Member ID: ' + esc(c.id) + '</span>' +
-          '<span class="wa">' + ic("chat", 13) + 'Preferred channel: ' + esc(c.preferredChannel) + '</span>' +
-          '<span>' + ic("mail", 13) + 'Marketing opt-in: ' + esc(c.consent) + '</span>' +
-          '<span>' + ic("gift", 13) + 'Customer lifetime value: ' + esc(c.ltv) + '</span></div></div></div>' +
-          '<button class="btn btn--ghost view360" data-toast="Customer 360 opened">View in 360</button></div>'
-      : '<div class="chead"><div class="chead__id">' + avatar(c.initials, 68, "indigo") + "<div>" +
-        '<div class="chead__namerow"><h1 class="chead__name">' + esc(c.name) + "</h1>" +
-        '<span class="tier">' + esc(c.tier) + "</span>" + pill(c.churnRisk + " churn risk", "lime") + "</div>" +
-        '<p class="chead__meta"><span class="mono">' + esc(c.id) + "</span> · " + esc(c.since) + " · " + esc(c.city) + "</p>" +
-        '<div class="chead__facts"><span>' + ic("phone", 13) + esc(c.phone) + "</span>" +
-        "<span>" + ic("mail", 13) + esc(c.email) + "</span>" +
-        "<span>" + ic("chat", 13) + "Prefers " + esc(c.preferredChannel) + "</span>" +
-        "<span>" + ic("shield", 13) + esc(c.consent) + "</span></div></div></div>" +
-        '<div class="chead__value"><div class="valuebox"><b>Lifetime value</b><strong>' + esc(c.ltv) + "</strong>" +
-        "<span>" + esc(c.segment) + "</span></div></div></div>";
-
-    var callMetrics = [
-      DATA.interactionKpis[0], DATA.interactionKpis[1], DATA.interactionKpis[2],
-      DATA.interactionKpis[4], DATA.interactionKpis[5],
-      { label: "Customer lifetime value", value: c.ltv, note: "Total lifetime value", tone: "" }
-    ];
-    var strip = '<div class="kpistrip' + (isCall ? ' kpistrip--call' : '') + '">' + (isCall ? callMetrics : DATA.interactionKpis).map(function (k) {
-      return '<div class="' + k.tone + '"><b>' + esc(k.label) + "</b><strong>" + esc(k.value) + "</strong><span>" + esc(k.note) + "</span></div>";
-    }).join("") + "</div>";
 
     var loyaltyCard = card({
       title: "Loyalty", sub: l.nextTier + " in " + l.toNext.toLocaleString() + " points",
@@ -620,28 +572,9 @@
       body: '<ul class="timeline">' + DATA.previous.map(function (p) {
         var tone = p.sentiment === "Positive" ? "lime" : p.sentiment === "Negative" ? "danger" : "muted";
         var label = p.channel === "phone" ? "Call" : p.channel === "chat" ? "Chat" : "Email";
-        return "<li><i class=\"" + p.channel + '">' + ic(p.channel, 14) + '</i><span class="timeline__body"><b>' +
+        return "<li><i class=\"" + p.channel + '\">' + ic(p.channel, 14) + '</i><span class="timeline__body"><b>' +
           esc(p.topic) + "</b><span>" + esc(p.date) + " · " + label + " · " + esc(p.agent) + " · " + esc(p.outcome) +
           "</span></span>" + pill(p.sentiment, tone) + "</li>";
-      }).join("") + "</ul>"
-    });
-
-    var summaryCard = card({
-      title: isCall ? "AI post-call summary" : "AI post-chat summary",
-      sub: "Disposition: " + esc(DATA.summary.disposition),
-      actions: pill(S.saved ? "Saved" : "Draft", S.saved ? "lime" : "muted"),
-      body: '<p class="summary__head">' + esc(DATA.summary.headline) + "</p>" +
-        '<ul class="bullets">' + DATA.summary.bullets.map(function (b) { return "<li>" + esc(b) + "</li>"; }).join("") + "</ul>" +
-        '<div class="summary__foot"><span class="summary__shift">Sentiment ' + pill("Negative", "danger") +
-        ic("arrow", 14) + pill("Positive", "lime") + "</span>" +
-        '<span class="summary__btns">' + btn("Edit", "quiet", "note", 'data-toast="Summary open for editing"') +
-        btn(S.saved ? "Saved to CRM" : "Save to CRM", "primary", "check", 'data-save="1"') + "</span></div>"
-    });
-
-    var kbCard = card({
-      title: "Knowledge suggestions",
-      body: '<ul class="kb">' + DATA.knowledge.map(function (k) {
-        return '<li data-toast="Opening article">' + ic("book", 14) + "<span>" + esc(k) + "</span></li>";
       }).join("") + "</ul>"
     });
 
@@ -653,22 +586,77 @@
       }).join("") + "</ul>"
     });
 
-    /* ---------- Live conversation workspace: sentiment | chat | assist ---------- */
+    return '<aside class="customer360-drawer" aria-label="Customer 360">' +
+      '<header class="customer360-drawer__head"><div><span>Customer 360</span><h2>' + esc(c.name) +
+      '</h2><p>Interaction remains active while you review customer context.</p></div>' +
+      '<button class="customer360-drawer__close" data-360="close" aria-label="Close Customer 360">×</button></header>' +
+      '<div class="customer360-drawer__body">' + loyaltyCard + demoCard + casesCard + prevCard + insightCard + qaActionsCard + '</div>' +
+      '</aside>';
+  }
 
-    var sentimentCol =
-      card({
-        title: "Live sentiment",
-        sub: isCall ? "Scored on every customer turn, live" : "Scored on every customer message",
-        accent: true,
-        body: '<div id="sentimentPanel">' + sentimentPanelHtml() + "</div>"
-      }) +
-      card({ title: "Signals detected", body: signalsHtml() });
+  function setCustomer360(open) {
+    S.customer360Open = !!open;
+    var existing = document.querySelector(".customer360-drawer");
+    if (existing && typeof existing.remove === "function") existing.remove();
+    if (!S.customer360Open) return;
+
+    var page = document.querySelector(".interaction-view");
+    if (page && typeof page.insertAdjacentHTML === "function") {
+      page.insertAdjacentHTML("beforeend", customer360Html());
+      return;
+    }
+
+    /* Browserless smoke-test fallback. In the browser this path is not used,
+       so opening Customer 360 never re-renders or clears a draft reply. */
+    render();
+  }
+
+  function profile() {
+    var c = DATA.customer;
+    var isCall = mode() === "call";
+
+    var livebar = '<div class="livebar">' +
+      '<button class="livebar__back" data-go="dashboard">' + ic("arrow", 15) + "<span>Dashboard</span></button>" +
+      '<span class="livebar__sep"></span>' +
+      (isCall
+        ? '<span class="livebar__chan">' + ic("phone", 14) + " Voice · live</span>"
+        : '<span class="livebar__chan">' + ic("chat", 14) + " " + esc(DATA.chat.channel) + " · ongoing</span>") +
+      '<span class="timer"><span class="timer__dot"></span><span class="timer__value" id="timer">' + mmss(S.seconds) + "</span>" +
+        '<button class="timer__btn" id="timerBtn" aria-label="Pause or resume">' + ic(S.running ? "pause" : "play", 13) + "</button></span>" +
+      '<span class="livebar__meta">Queue wait ' + esc(DATA.live.queueWait) + "</span>" +
+      '<span class="livebar__meta">Intent: <b>' + esc(DATA.live.intent) + "</b></span>" +
+      (isCall
+        ? '<span class="livebar__rec">' + ic("mic", 13) + " Recording</span>"
+        : '<span class="livebar__rec">' + ic("shield", 13) + " Transcript saving</span>") +
+      '<span class="livebar__spacer"></span>' +
+      (isCall ? btn("Hold", "quiet", "pause", 'data-toast="Customer placed on hold"') : "") +
+      btn("Transfer", "quiet", "up", 'data-toast="Transfer panel opened"') +
+      btn("End & wrap", "primary", "check", 'data-wrap="open"') + "</div>";
+
+    /* One customer-profile component for voice and digital interactions. */
+    var chead = '<div class="chead chead--call"><div class="chead__id">' + avatar(c.initials, 68, isCall ? "pink" : "indigo") + '<div class="chead__main">' +
+      '<div class="chead__namerow"><h1 class="chead__name">' + esc(c.name) + '</h1><span class="vip-badge">VIP</span>' + pill(c.churnRisk + " churn risk", "lime") + '</div>' +
+      '<div class="chead__facts chead__facts--call"><span>' + ic("phone", 13) + esc(c.phone) + '</span>' +
+      '<span>' + ic("mail", 13) + esc(c.email) + '</span><span>Member ID: ' + esc(c.id) + '</span>' +
+      '<span class="wa">' + ic("chat", 13) + 'Preferred channel: ' + esc(c.preferredChannel) + '</span>' +
+      '<span>' + ic("mail", 13) + 'Marketing opt-in: ' + esc(c.consent) + '</span>' +
+      '<span>' + ic("gift", 13) + 'Customer lifetime value: ' + esc(c.ltv) + '</span></div></div></div>' +
+      '<button class="btn btn--ghost view360" data-360="open">View in 360</button></div>';
+
+    var interactionMetrics = [
+      DATA.interactionKpis[0], DATA.interactionKpis[1], DATA.interactionKpis[2],
+      DATA.interactionKpis[4], DATA.interactionKpis[5],
+      { label: "Customer lifetime value", value: c.ltv, note: "Total lifetime value", tone: "" }
+    ];
+    var strip = '<div class="kpistrip kpistrip--call">' + interactionMetrics.map(function (k) {
+      return '<div class="' + k.tone + '"><b>' + esc(k.label) + "</b><strong>" + esc(k.value) + "</strong><span>" + esc(k.note) + "</span></div>";
+    }).join("") + "</div>";
 
     var callCol = '<section class="card chatpane callpane">' +
       '<header class="chatpane__head">' + avatar(DATA.customer.initials, 38, "pink") +
         '<span class="chatpane__who"><b>' + esc(DATA.customer.name) + "</b>" +
-          '<span><i class="chatpane__live"></i>Live call \u00b7 ' + esc(DATA.call.from) +
-          ' \u00b7 <span class="mono">' + esc(DATA.call.id) + "</span></span></span>" +
+          '<span><i class="chatpane__live"></i>Live call · ' + esc(DATA.call.from) +
+          ' · <span class="mono">' + esc(DATA.call.id) + "</span></span></span>" +
         '<span class="chatpane__chip">' + ic("clock", 12) + '<span id="chatTimer">' + mmss(S.seconds) + "</span></span>" +
         btn("Mute", "quiet", "mic", 'data-toast="Microphone muted"') +
         btn("Keypad", "quiet", "grid", 'data-toast="Keypad opened"') +
@@ -677,80 +665,53 @@
         " Transcribing live</span><span>IVR path: " + esc(DATA.call.dtmf) + "</span></div>" +
       '<ul class="chatpane__log tlog" id="callLog"></ul>' +
       '<div class="chatpane__quick">' + DATA.call.quickActions.map(function (q) {
-        return '<button data-toast="' + esc(q) + ' \u2014 noted on the call">' + esc(q) + "</button>";
+        return '<button data-toast="' + esc(q) + ' — noted on the call">' + esc(q) + "</button>";
       }).join("") + "</div>" +
       '<div class="chatpane__foot"><span>' + ic("shield", 12) +
-        " Recording \u00b7 sentiment scored on every customer turn</span>" +
+        " Recording · sentiment scored on every customer turn</span>" +
         "<span>Suggestions update as the mood shifts</span></div>" +
       "</section>";
 
-    var chatCol = '<section class="card chatpane">' +
-      '<header class="chatpane__head">' + avatar(DATA.customer.initials, 38, "pink") +
-        '<span class="chatpane__who"><b>' + esc(DATA.customer.name) + "</b>" +
-          '<span><i class="chatpane__live"></i>Ongoing chat \u00b7 ' + esc(DATA.chat.channel) +
-          ' \u00b7 <span class="mono">' + esc(DATA.chat.id) + "</span></span></span>" +
-        '<span class="chatpane__chip">' + ic("clock", 12) + '<span id="chatTimer">' + mmss(S.seconds) + "</span></span>" +
-        btn("Transfer", "quiet", "up", 'data-toast="Transfer panel opened"') +
-        btn("End &amp; wrap", "primary", "check", 'data-toast="Chat ended \u2014 wrap-up started"') +
-      "</header>" +
+    /* Genesys owns the interaction controls; CareIQ owns the surrounding intelligence.
+       The duplicated Transfer / End & Wrap controls from the older chat card are removed. */
+    var chatCol = '<section class="card chatpane chatpane--interaction">' +
+      '<header class="chatpane__head chatpane__head--simple"><span class="chatpane__workspace-title">Live chat</span>' +
+        '<span class="chatpane__channel">' + ic("chat", 12) + esc(DATA.chat.channel) + '</span>' +
+        '<span class="chatpane__conversation mono">' + esc(DATA.chat.id) + '</span></header>' +
       '<ul class="chatpane__log" id="chatLog"></ul>' +
       '<div class="chatpane__quick">' + DATA.chat.quickReplies.map(function (q) {
         return '<button data-quick="' + esc(q) + '">' + esc(q) + "</button>";
       }).join("") + "</div>" +
       '<div class="chatpane__compose">' +
-        '<textarea id="chatInput" rows="1" placeholder="Type a reply \u2014 Enter to send, Shift+Enter for a new line"></textarea>' +
+        '<textarea id="chatInput" rows="1" placeholder="Type a reply — Enter to send, Shift+Enter for a new line"></textarea>' +
         '<button class="chatpane__send" id="chatSend" aria-label="Send message">' + ic("arrow", 18) + "</button>" +
       "</div>" +
       '<div class="chatpane__foot"><span>' + ic("shield", 12) +
-        " Transcript saving \u00b7 sentiment scored live</span><span>Suggestions update as the mood shifts</span></div>" +
+        " Transcript saving · sentiment scored live</span><span>Suggestions update as the mood shifts</span></div>" +
       "</section>";
 
-    var centreCol = isCall ? callCol : chatCol;
-
-    var chatAssistCol =
-      card({
-        title: "Say this",
-        sub: '<span id="saySub">Tuned to ' + SENTIMENT.label().toLowerCase() + " sentiment</span>",
-        accent: true,
-        body: '<div id="sayPanel">' + sayHtml() + "</div>"
-      }) +
-      card({
-        title: "Do this", sub: "Back-office actions to perform",
-        body: '<div id="doPanel">' + doHtml() + "</div>"
-      }) +
-      card({
-        title: "AI QA assistant",
-        sub: '<span id="qaSub">Live compliance score ' +
-             Math.round((S.qa.filter(function (x) { return x.done; }).length / S.qa.length) * 100) + "%</span>",
-        body: '<div id="qaPanel">' + qaHtml() + "</div>"
-      }) +
-      kbCard;
-
-    var callAssistCol = '<section class="careiq-assist"><div class="careiq-assist__title">' + ic("spark", 14) + '<b>CareIQ Assist</b></div>' +
+    var interactionAssistCol = '<section class="careiq-assist"><div class="careiq-assist__title">' + ic("spark", 14) + '<b>CareIQ Assist</b></div>' +
       '<section class="assist-section"><header><span>' + ic("chat", 14) + '<b>Say This</b></span><span>⌃</span></header><p class="assist-mini" id="saySub">Tuned to ' + SENTIMENT.label().toLowerCase() + ' sentiment</p><div id="sayPanel">' + sayHtml() + '</div></section>' +
       '<section class="assist-section"><header><span>' + ic("note", 14) + '<b>Do This</b></span><span>⌃</span></header><div id="doPanel">' + doHtml() + '</div></section>' +
-      '<section class="assist-section"><header><span>' + ic("shield", 14) + '<b>QA Guidance</b></span><span>⌃</span></header><div id="qaPanel">' + qaHtml() + '</div></section>' +
+      '<section class="assist-section"><header><span>' + ic("shield", 14) + '<b>SOP Guidance</b></span><span>⌃</span></header><p class="assist-mini" id="qaSub">Live SOP compliance score ' + Math.round((S.qa.filter(function (x) { return x.done; }).length / S.qa.length) * 100) + '%</p><div id="qaPanel">' + qaHtml() + '</div></section>' +
       '<section class="assist-section"><header><span>' + ic("book", 14) + '<b>Knowledge</b></span><span>⌃</span></header><ul class="kb assist-kb">' + DATA.knowledge.map(function (k) { return '<li data-toast="Opening article">' + ic("book", 12) + '<span>' + esc(k) + '</span></li>'; }).join("") + '</ul></section></section>';
 
-    var callSignals = '<div class="call-signals">' +
-      '<div><span class="signal-icon signal-icon--sent">☺</span><span><b>Sentiment</b><strong>Neutral → Positive</strong><small>Improving</small></span></div>' +
+    var startLabel = SENTIMENT.label(SENTIMENT.start());
+    var currentLabel = SENTIMENT.label();
+    var sentimentDelta = SENTIMENT.delta();
+    var trendLabel = sentimentDelta > 2 ? "Improving" : sentimentDelta < -2 ? "Declining" : "Stable";
+    var interactionSignals = '<div class="call-signals interaction-signals">' +
+      '<div><span class="signal-icon signal-icon--sent">☺</span><span><b>Sentiment</b><strong>' + esc(startLabel) + ' → ' + esc(currentLabel) + '</strong><small>' + esc(trendLabel) + '</small></span></div>' +
       '<div><span class="signal-icon">' + ic("phone", 16) + '</span><span><b>Repeat caller</b><strong>2nd contact in 7 days</strong></span></div>' +
       '<div><span class="signal-icon signal-icon--wa">' + ic("chat", 16) + '</span><span><b>Preferred channel</b><strong>' + esc(c.preferredChannel) + '</strong></span></div>' +
-      '<div><span class="signal-icon signal-icon--purchase">' + ic("wallet", 16) + '</span><span><b>Recent purchase</b><strong>Card replacement request</strong></span></div>' +
+      '<div><span class="signal-icon signal-icon--purchase">' + ic("wallet", 16) + '</span><span><b>Recent transaction</b><strong>Mall of the Emirates · AED 1,240</strong></span></div>' +
       '</div>';
 
-    var workspace = isCall
-      ? '<div class="call-workspace"><div class="call-main">' + callSignals + callCol + '</div><div class="call-assist">' + callAssistCol + '</div></div>'
-      : '<div class="section-title"><span>Live now</span><h2>Chat workspace</h2></div><div class="cols cols--live"><div class="col">' + sentimentCol + '</div><div class="col">' + chatCol + '</div><div class="col">' + chatAssistCol + '</div></div>';
+    var centreCol = isCall ? callCol : chatCol;
+    var workspace = '<div class="call-workspace interaction-workspace"><div class="call-main interaction-main">' + interactionSignals + centreCol + '</div><div class="call-assist interaction-assist">' + interactionAssistCol + '</div></div>';
 
-    var context = isCall ? "" : '<div class="section-title"><span>Customer 360</span><h2>Profile &amp; history</h2></div>' +
-      '<div class="cols cols--profile">' +
-        '<div class="col">' + loyaltyCard + demoCard + qaActionsCard + "</div>" +
-        '<div class="col">' + casesCard + prevCard + summaryCard + "</div>" +
-        '<div class="col col--rail">' + insightCard + "</div>" +
-      "</div>";
-
-    return '<div class="page' + (isCall ? ' call-view' : '') + '">' + livebar + chead + strip + workspace + context +
+    return '<div class="page call-view interaction-view' + (isCall ? ' voice-view' : ' chat-view') + '">' + livebar + chead + strip + workspace +
+      (S.customer360Open ? customer360Html() : "") +
       (S.wrapOpen ? wrapModal() : "") + "</div>";
   }
 
@@ -910,7 +871,7 @@
     var qaSub = document.getElementById("qaSub");
     if (qaSub) {
       var d = S.qa.filter(function (x) { return x.done; }).length;
-      qaSub.textContent = "Live compliance score " + Math.round((d / S.qa.length) * 100) + "%";
+      qaSub.textContent = "Live SOP compliance score " + Math.round((d / S.qa.length) * 100) + "%";
     }
   }
 
@@ -992,7 +953,7 @@
   /* ------------------------------ Events ------------------------------ */
   document.addEventListener("click", function (e) {
     var t = e.target.closest("[data-go],[data-tab],[data-task],[data-qa],[data-do],[data-insert],[data-send]," +
-      "[data-quick],[data-save],[data-toast],[data-notif],[data-wrap],[data-signout],#timerBtn");
+      "[data-quick],[data-save],[data-toast],[data-notif],[data-wrap],[data-360],[data-signout],#timerBtn");
 
     if ((!t || !t.hasAttribute("data-notif")) && S.notifOpen && !e.target.closest(".notif")) {
       S.notifOpen = false; render();
@@ -1005,6 +966,11 @@
       } else if (window.CAREIQ_PLATFORM && typeof window.CAREIQ_PLATFORM.signOut === "function") {
         window.CAREIQ_PLATFORM.signOut();
       }
+      return;
+    }
+
+    if (t.hasAttribute("data-360")) {
+      setCustomer360(t.getAttribute("data-360") === "open");
       return;
     }
 
@@ -1032,6 +998,7 @@
     if (t.hasAttribute("data-go")) {
       var dest = t.getAttribute("data-go");
       if (dest !== S.screen) { S.alert = null; S.typing = false; }
+      S.customer360Open = false;
       S.screen = dest; window.scrollTo(0, 0); render(); return;
     }
     if (t.hasAttribute("data-tab"))  { S.tab = t.getAttribute("data-tab"); render(); return; }
