@@ -821,7 +821,8 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 .chat-view .careiq-assist{min-height:0;height:auto}
 .callpane{height:clamp(410px,54dvh,560px);min-height:380px}
-.call-assist .careiq-assist{max-height:clamp(410px,54dvh,560px);overflow-y:auto;overscroll-behavior:contain}
+/* Default desktop: Assist grows naturally with its content. Do not create a nested scrollbar unless viewport height is genuinely constrained. */
+.call-assist .careiq-assist{max-height:none;overflow:visible;overscroll-behavior:auto}
 
 /* Textual customer context is allowed to wrap rather than force page overflow. */
 .chead--call{min-width:0}
@@ -934,6 +935,11 @@ html,body{max-width:100%;overflow-x:hidden}
   .chatpane__quick{padding-left:10px;padding-right:10px}
   .chat-view .chatpane__log{padding:12px}
   .tline{grid-template-columns:88px minmax(0,1fr)}
+}
+
+@media (max-height:760px) and (min-width:1181px){
+  /* Short desktop windows: keep the interaction usable by allowing Assist to own overflow only when needed. */
+  .call-assist .careiq-assist{max-height:calc(100dvh - 190px);overflow-y:auto;overscroll-behavior:contain}
 }
 
 @media (max-height:720px) and (min-width:981px){

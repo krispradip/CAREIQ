@@ -71,3 +71,10 @@ Expected result: **PASS**.
 - Customer profile facts wrap safely at reduced widths.
 - Top navigation, live interaction bar, KPI strips, signals, chat composer, modal and notification surfaces have responsive fallbacks.
 - No interaction-state logic was changed; chat send/auto-response, transcript progression, CareIQ Assist, announcements, wrap-up, login and sign-out remain on the existing runtime.
+
+
+## v0.6.2 adaptive CareIQ Assist overflow
+- Normal desktop layouts no longer impose a max-height on CareIQ Assist and therefore do not show a redundant nested scrollbar.
+- A short-height desktop fallback enables internal scrolling only when the available viewport height requires it.
+- Existing responsive stacking at narrower widths remains unchanged.
+- No changes were made to chat send/auto-response, transcript progression, sentiment, Assist content generation, Customer 360, announcements, wrap-up, login or sign-out logic.

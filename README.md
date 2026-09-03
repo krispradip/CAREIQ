@@ -1,6 +1,6 @@
-# CareIQ Care Console - Master v0.6.1
+# CareIQ Care Console - Master v0.6.2
 
-This is the consolidated CareIQ prototype baseline, updated in v0.6.0 with a unified voice/chat interaction workspace and non-blocking Customer 360 drawer. Use this full codebase as the master for all changes from this point onward.
+This is the consolidated CareIQ prototype baseline, updated through v0.6.2 with a unified voice/chat interaction workspace, non-blocking Customer 360 drawer, responsive hardening and adaptive CareIQ Assist overflow. Use this full codebase as the master for all changes from this point onward.
 
 It combines the approved CareIQ dashboard/call/chat design, Pia-aligned CX additions, the prototype login journey, the application controller, service boundaries, mock data and regression checks in one complete repository.
 
@@ -134,3 +134,11 @@ The prototype uses a versioned session key so older GitHub Pages sessions cannot
 
 ### v0.6.1 adaptive layout QA
 The prototype now treats browser resizing and split-screen use as first-class scenarios. Customer 360 scrolls independently without shrinking its cards; the active interaction continues underneath. Call/chat panes, navigation, KPI strips, signals, modals and supporting panels adapt at desktop, half-screen and narrow-window breakpoints rather than assuming a maximized browser.
+
+
+## v0.6.2 - CareIQ Assist adaptive overflow
+
+- Removed the permanent/nested CareIQ Assist scrollbar on normal full-screen desktop layouts.
+- CareIQ Assist now grows naturally with its content when the viewport has sufficient height.
+- Internal Assist scrolling is enabled only for genuinely short desktop viewports where the content would otherwise extend beyond the usable screen.
+- Existing split-screen/stacked responsive behavior is preserved; no interaction logic changed.
