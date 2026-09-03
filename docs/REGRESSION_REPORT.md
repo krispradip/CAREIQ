@@ -1,10 +1,35 @@
 # Regression guard report
 
-Core working conversation functions were compared against the approved single-file master during generation.
+The application-controller refactor is intentionally isolated from the approved CareIQ interaction runtime.
 
-- `transcriptHtml`: UNCHANGED - SHA256 `7c589d49ccdbe3ec`
-- `messagesHtml`: UNCHANGED - SHA256 `47b07d8ba934c698`
-- `paintMessages`: UNCHANGED - SHA256 `8a7f06ec0be64696`
-- `sendChat`: UNCHANGED - SHA256 `e055b19b38b7b663`
-- `bindChat`: UNCHANGED - SHA256 `343c4540c2524a14`
-- `paintAssist`: UNCHANGED - SHA256 `56c0b65d4663c7f6`
+## Core conversation engine
+
+The following functions remain in `src/legacy/care-console.js` and were not modified by the `app.js` refactor:
+
+- `transcriptHtml`
+- `messagesHtml`
+- `paintMessages`
+- `sendChat`
+- `bindChat`
+- `paintAssist`
+
+The approved interaction engine therefore remains the execution path for the call transcript, customer chat, chat composer, quick replies, sentiment updates and CareIQ Assist repainting.
+
+## Automated regression checks
+
+`npm run check` verifies that `src/main.js` stays a thin bootstrap and that `src/app.js` owns the application lifecycle boundary.
+
+`npm run smoke` verifies:
+
+- Login screen renders
+- Prototype credentials authenticate
+- Agent Dashboard renders
+- Announcements render
+- Customer Call View renders
+- CareIQ Assist renders
+- End & Wrap modal renders
+- Customer Chat View renders
+- Chat composer is present
+- A quick reply is sent through the existing `sendChat()` emulation path and appears in the chat log
+
+Current result: **PASS**.
