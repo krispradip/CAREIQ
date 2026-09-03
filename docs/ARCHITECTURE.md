@@ -39,3 +39,28 @@ CareIQ BFF / application API
 ## Prototype mode
 
 `config/runtime-config.js` currently uses `auth.mode = mock` and `api.mode = mock`. This is intentional for GitHub Pages. Production Entra and API adapters are not simulated as real security.
+
+
+## Front-end application boundary
+
+The front end uses a dedicated application controller so prototype changes can be tracked and production integrations can be introduced without another top-level rewrite.
+
+```text
+index.html
+    |
+    v
+src/main.js            thin bootstrap only
+    |
+    v
+src/app.js             application lifecycle/orchestration
+    |-- authentication/login lifecycle
+    |-- authenticated application startup
+    |-- future route/view orchestration
+    |
+    +--> auth/
+    +--> views/components/   extracted incrementally
+    +--> services/
+    +--> legacy/care-console.js   temporary preserved runtime
+```
+
+`src/legacy/care-console.js` is intentionally preserved during the current refactor to protect the working transcript/chat engine. Its views and components should be migrated incrementally behind `src/app.js`, with regression tests after each extraction.

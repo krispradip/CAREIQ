@@ -1,10 +1,10 @@
-# Regression guard report
+# Regression guard report - v0.5.0
 
-The application-controller refactor is intentionally isolated from the approved CareIQ interaction runtime.
+This consolidated master intentionally preserves the approved CareIQ interaction runtime while adding the proper application/login lifecycle around it.
 
 ## Core conversation engine
 
-The following functions remain in `src/legacy/care-console.js` and were not modified by the `app.js` refactor:
+The following functions remain in `src/legacy/care-console.js` and are not rewritten by the application-controller/login refactor:
 
 - `transcriptHtml`
 - `messagesHtml`
@@ -15,9 +15,18 @@ The following functions remain in `src/legacy/care-console.js` and were not modi
 
 The approved interaction engine therefore remains the execution path for the call transcript, customer chat, chat composer, quick replies, sentiment updates and CareIQ Assist repainting.
 
+## Lifecycle changes in this master
+
+- `index.html` is the canonical application shell and loads the complete modular entry path.
+- `src/main.js` is a thin bootstrap into `src/app.js`.
+- `src/app.js` controls authenticated vs unauthenticated startup.
+- Prototype login authenticates against `src/mocks/mockUsers.js`.
+- Prototype session uses `sessionStorage` only.
+- Sign out routes through `App.logout()` and returns to the login lifecycle.
+
 ## Automated regression checks
 
-`npm run check` verifies that `src/main.js` stays a thin bootstrap and that `src/app.js` owns the application lifecycle boundary.
+`npm run check` verifies required files, entrypoint references, the `main.js -> app.js` boundary and absence of obvious secret-like values in public runtime configuration.
 
 `npm run smoke` verifies:
 
@@ -31,5 +40,6 @@ The approved interaction engine therefore remains the execution path for the cal
 - Customer Chat View renders
 - Chat composer is present
 - A quick reply is sent through the existing `sendChat()` emulation path and appears in the chat log
+- Sign out clears the prototype session
 
-Current result: **PASS**.
+Expected result: **PASS**.

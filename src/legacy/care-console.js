@@ -423,7 +423,7 @@
             : "") +
         "</span>" +
         avatar(DATA.agent.initials, 34) +
-        '<button class="btn btn--ghost signout" data-toast="Sign out is not connected in this prototype">Sign out</button>' +
+        '<button class="btn btn--ghost signout" data-signout="true">Sign out</button>' +
       "</div></header>";
   }
 
@@ -992,12 +992,21 @@
   /* ------------------------------ Events ------------------------------ */
   document.addEventListener("click", function (e) {
     var t = e.target.closest("[data-go],[data-tab],[data-task],[data-qa],[data-do],[data-insert],[data-send]," +
-      "[data-quick],[data-save],[data-toast],[data-notif],[data-wrap],#timerBtn");
+      "[data-quick],[data-save],[data-toast],[data-notif],[data-wrap],[data-signout],#timerBtn");
 
     if ((!t || !t.hasAttribute("data-notif")) && S.notifOpen && !e.target.closest(".notif")) {
       S.notifOpen = false; render();
     }
     if (!t) return;
+
+    if (t.hasAttribute("data-signout")) {
+      if (window.CAREIQ_APP && typeof window.CAREIQ_APP.logout === "function") {
+        window.CAREIQ_APP.logout();
+      } else if (window.CAREIQ_PLATFORM && typeof window.CAREIQ_PLATFORM.signOut === "function") {
+        window.CAREIQ_PLATFORM.signOut();
+      }
+      return;
+    }
 
     if (t.hasAttribute("data-wrap")) {
       var w = t.getAttribute("data-wrap");

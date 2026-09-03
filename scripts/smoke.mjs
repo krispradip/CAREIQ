@@ -64,7 +64,7 @@ if (!element("app").innerHTML.includes("Sign in to CareIQ")) throw new Error("Lo
 if (!element("app").innerHTML.includes("Microsoft Entra ID SSO")) throw new Error("Entra production direction missing from login");
 
 const { signIn } = await import(new URL("../src/auth/authService.js", import.meta.url));
-await signIn("layla.haddad@maf.demo", "welcome123");
+await signIn("layla.haddad@maf.ae", "welcome123");
 await import(new URL("../src/main.js", import.meta.url));
 
 const app = element("app");
@@ -111,4 +111,9 @@ const quickReply = "I can help with that.";
 click({ "data-quick": quickReply });
 if (!element("chatLog").innerHTML.includes(quickReply)) throw new Error("Chat emulation did not send the quick reply");
 
-console.log("CareIQ smoke tests passed, including chat emulation.");
+// Sign-out must clear the prototype session. The application controller owns
+// the lifecycle even though the legacy header still renders the button.
+click({ "data-signout": "true" });
+if (session.has("careiq.prototype.session")) throw new Error("Sign out did not clear the prototype session");
+
+console.log("CareIQ smoke tests passed, including login, sign-out and chat emulation.");

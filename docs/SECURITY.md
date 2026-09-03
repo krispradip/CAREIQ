@@ -33,4 +33,6 @@ For material actions record timestamp, Entra object/user identifier, effective r
 
 ## Prototype warning
 
-The GitHub Pages build is public and uses mock security. It is suitable for demonstration only and must not be given production customer data or credentials.
+The GitHub Pages build is public and uses mock security. The prototype login validates only against the fake user master in `src/mocks/mockUsers.js`; because the site is static, those sample credentials are visible in the public source and provide no real access control. The mock session uses browser `sessionStorage` only.
+
+It is suitable for demonstration only and must not be given production customer data, real MAF passwords, tokens or credentials. Production replaces this entire mock-auth path with Microsoft Entra ID SSO and server-side authorization.
