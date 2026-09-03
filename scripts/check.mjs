@@ -13,7 +13,7 @@ for (const rel of required) {
   if (!fs.existsSync(path.join(root, rel))) { console.error(`Missing required file: ${rel}`); failed = true; }
 }
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
-for (const ref of ["./src/styles/main.css?v=0.6.0", "./config/runtime-config.js", "./src/main.js?v=0.6.0", 'name="careiq-version" content="0.6.0"']) {
+for (const ref of ["./src/styles/main.css?v=0.6.1", "./config/runtime-config.js", "./src/main.js?v=0.6.1", 'name="careiq-version" content="0.6.1"']) {
   if (!html.includes(ref)) { console.error(`index.html missing reference: ${ref}`); failed = true; }
 }
 
@@ -41,5 +41,15 @@ for (const requiredUx of ["customer360Html", "data-360=\"open\"", "SOP Guidance"
   if (!legacy.includes(requiredUx)) { console.error(`v0.6 interaction UX missing: ${requiredUx}`); failed = true; }
 }
 if (legacy.includes("End &amp; wrap")) { console.error("Escaped End & Wrap typo remains in runtime"); failed = true; }
+const css = fs.readFileSync(path.join(root, "src/styles/main.css"), "utf8");
+for (const responsiveGuard of [
+  ".customer360-drawer__body>.card{flex:0 0 auto",
+  "width:clamp(560px,42vw,680px)",
+  "height:clamp(480px,62dvh,640px)",
+  "@media (max-width:980px)",
+  "@media (max-width:640px)"
+]) {
+  if (!css.includes(responsiveGuard)) { console.error(`Responsive layout guard missing: ${responsiveGuard}`); failed = true; }
+}
 if (failed) process.exit(1);
 console.log("CareIQ static checks passed.");

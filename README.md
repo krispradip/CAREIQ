@@ -131,3 +131,6 @@ GitHub Pages is prototype/demo hosting only. The intended production path is a p
 
 ### v0.5.1 login/sign-out fix
 The prototype uses a versioned session key so older GitHub Pages sessions cannot bypass the login screen after deployment. Sign out clears the prototype session and returns immediately to the login screen. Demo credentials remain `layla.haddad@maf.ae` / `welcome123`.
+
+### v0.6.1 adaptive layout QA
+The prototype now treats browser resizing and split-screen use as first-class scenarios. Customer 360 scrolls independently without shrinking its cards; the active interaction continues underneath. Call/chat panes, navigation, KPI strips, signals, modals and supporting panels adapt at desktop, half-screen and narrow-window breakpoints rather than assuming a maximized browser.

@@ -62,3 +62,12 @@ Expected result: **PASS**.
 - Corrected the chat End & Wrap HTML-entity display defect.
 - Updated recent purchase signal to Recent transaction: Mall of the Emirates · AED 1,240.
 - Existing chat send, quick reply, auto-response, sentiment, call transcript, announcements, wrap-up and sign-out behavior retained.
+
+## v0.6.1 responsive hardening
+- Fixed Customer 360 cards shrinking/clipping inside the drawer by making drawer cards non-shrinking flex items.
+- Customer 360 now owns vertical scrolling below a fixed header; wide case tables scroll inside their card instead of expanding the page.
+- Drawer width adapts across full desktop, half-screen/split-screen, smaller laptop, and narrow viewport layouts.
+- Call/chat workspaces now size against viewport height rather than relying only on fixed pixel heights.
+- Customer profile facts wrap safely at reduced widths.
+- Top navigation, live interaction bar, KPI strips, signals, chat composer, modal and notification surfaces have responsive fallbacks.
+- No interaction-state logic was changed; chat send/auto-response, transcript progression, CareIQ Assist, announcements, wrap-up, login and sign-out remain on the existing runtime.

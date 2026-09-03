@@ -64,3 +64,6 @@ src/app.js             application lifecycle/orchestration
 ```
 
 `src/legacy/care-console.js` is intentionally preserved during the current refactor to protect the working transcript/chat engine. Its views and components should be migrated incrementally behind `src/app.js`, with regression tests after each extraction.
+
+## Adaptive workspace principle (v0.6.1)
+CareIQ is not designed around a full-screen-only assumption. The same interaction workspace must remain usable when the browser is resized, used in a half-screen/split-screen desktop layout, or run on a smaller laptop viewport. Layout containers use fluid sizing and breakpoint-driven stacking; interaction state is not recreated simply because the viewport changes. Customer 360 is a non-blocking context drawer with an independently scrollable body, while call/chat state continues underneath.
